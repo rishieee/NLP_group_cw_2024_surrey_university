@@ -4,6 +4,7 @@ from flask_json import FlaskJSON, JsonError, json_response, as_json
 from flask_restful import Resource, Api
 import sqlite3
 from process import *
+from model_predict import *
 
 app = Flask(__name__)
 api = Api(app)
@@ -46,17 +47,18 @@ def get_text():
 			processor = ProcessText(data['text'])
 			tokenize_text, pos_tags = processor.tokenizer()
 
-			result = 0
-			#result = mirko_function(tokenize_text, pos_tags) 
+			predictions = model_predict(tokenize_text, pos_tags)
+			
+			predictions_str = ""
+			for token in predictions:
+				predictions_str += token +  " "
 
-			save_user_imputs(currentDateTime, data['text'], result)
+			save_user_imputs(currentDateTime, data['text'], predictions_str)
 
 			return jsonify({
 				"success": True,
 				"original": data['text'],
-				"tokenize_text": tokenize_text,
-				"pos_tags": pos_tags,
-				"ner_tags": result
+				"ner_tags": predictions_str
 
 				}), 200
 		else:

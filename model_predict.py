@@ -3,6 +3,9 @@ import torch.nn as nn
 import numpy as np
 from torchtext.vocab import vocab
 from transformers import BertTokenizerFast, BertModel
+import nltk
+
+nltk.download('punkt')
 
 class BioBertPosTagsClassifier(nn.Module):
     def __init__(self, output_dim, pos_vocab_size, pos_embedding_dim):

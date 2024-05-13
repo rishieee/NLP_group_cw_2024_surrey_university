@@ -1,0 +1,11 @@
+numpy
+nltk
+tqdm
+spacy
+flask
+flask_json
+flask_restful
+torchtext
+transformers
+
+python3 -m spacy download en_core_web_sm
