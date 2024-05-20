@@ -12,14 +12,14 @@ class BioBertPosTagsClassifier(nn.Module):
         super(BioBertPosTagsClassifier, self).__init__()
         self.model_label = 'biobert_postags_cased'
         self.bert = BertModel.from_pretrained('dmis-lab/biobert-v1.1',
-                                                                                    num_labels=output_dim,
-                                                                                    add_pooling_layer=False)
+                                              num_labels=output_dim,
+                                              add_pooling_layer=False)
 
         # Add 1 to pos_vocab_size to account for the special -100 index.
         # We'll reserve the last embedding vector for -100 indices.
         self.pos_embedding = nn.Embedding(num_embeddings=pos_vocab_size + 1,
-                                                                            embedding_dim=pos_embedding_dim,
-                                                                            padding_idx=pos_vocab_size)
+                                          embedding_dim=pos_embedding_dim,
+                                          padding_idx=pos_vocab_size)
 
         # Adjust the input size of the classifier
         combined_embedding_dim = self.bert.config.hidden_size + pos_embedding_dim
@@ -31,7 +31,9 @@ class BioBertPosTagsClassifier(nn.Module):
         sequence_output = outputs[0]    # [batch_size, sequence_length, 768]
 
         # Adjust pos_tags to ensure -100 indices map to the last embedding vector
-        adjusted_pos_tags = torch.where(pos_tags == -100, torch.tensor(self.pos_embedding.padding_idx, device=pos_tags.device), pos_tags)
+        adjusted_pos_tags = torch.where(pos_tags == -100,
+                                        torch.tensor(self.pos_embedding.padding_idx, device=pos_tags.device),
+                                        pos_tags)
 
         # Get embeddings from POS tags
         pos_embeddings = self.pos_embedding(adjusted_pos_tags)
@@ -63,8 +65,12 @@ def model_predict(tokenize_text, pos_tags, device='cpu'):
     pos_vocab_size = 18
     pos_embedding_dim = 16
 
-    model = BioBertPosTagsClassifier(output_dim=output_dim, pos_vocab_size=pos_vocab_size, pos_embedding_dim=pos_embedding_dim)
-    model.load_state_dict(torch.load('models/biobert_postags_cased__e_16.pt', map_location=torch.device('cpu')))
+    model = BioBertPosTagsClassifier(output_dim=output_dim,
+                                     pos_vocab_size=pos_vocab_size,
+                                     pos_embedding_dim=pos_embedding_dim)
+
+    model.load_state_dict(torch.load('models/biobert_postags_cased__e_16.pt',
+                                     map_location=torch.device('cpu')))
 
     model = model.to(device)
     model.eval()
@@ -79,7 +85,23 @@ def model_predict(tokenize_text, pos_tags, device='cpu'):
 
     # Define the POS tag vocabulary
     PAD_TOKEN = '<pad>'
-    pos_tag_to_ix = {'ADV': 0, 'VERB': 1, 'SCONJ': 2, 'PRON': 3, 'PROPN': 4, 'NOUN': 5, 'ADP': 6, 'ADJ': 7, 'CCONJ': 8, 'SYM': 9, 'NUM': 10, 'PART': 11, 'PUNCT': 12, 'DET': 13, 'INTJ': 14, 'AUX': 15, 'X': 16}
+    pos_tag_to_ix = {'ADV': 0,
+                     'VERB': 1,
+                     'SCONJ': 2,
+                     'PRON': 3,
+                     'PROPN': 4,
+                     'NOUN': 5,
+                     'ADP': 6,
+                     'ADJ': 7,
+                     'CCONJ': 8,
+                     'SYM': 9,
+                     'NUM': 10,
+                     'PART': 11,
+                     'PUNCT': 12,
+                     'DET': 13,
+                     'INTJ': 14,
+                     'AUX': 15,
+                     'X': 16}
     pos_tag_vocab = vocab(pos_tag_to_ix, min_freq=0, specials=(PAD_TOKEN,), special_first=True)
 
     # Tokenize the input text
