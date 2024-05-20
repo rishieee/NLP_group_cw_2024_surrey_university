@@ -9,7 +9,7 @@ nltk.download('punkt')
 
 # Constants
 MODEL_CHECKPOINT = 'dmis-lab/biobert-v1.1'
-MODEL_PATH = 'models/biobert_postags_cased__e_16.pt'
+DEFAULT_MODEL_PATH = 'models/biobert_postags_cased__e_16.pt'
 MAX_LENGTH = 512
 PAD_TOKEN = '<pad>'
 
@@ -61,10 +61,10 @@ class BioBertPosTagsClassifier(nn.Module):
         return logits
 
 
-def load_model(device='cpu'):
+def load_model(model_path=DEFAULT_MODEL_PATH, device='cpu'):
     """Load model."""
     model = BioBertPosTagsClassifier(output_dim=len(NER_TAGS), pos_vocab_size=len(POS_TAGS)+1, pos_embedding_dim=16)
-    model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device(device)))
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.to(device).eval()
     return model
 
@@ -116,10 +116,10 @@ def logits_to_ner_tags(logits, encoded_pos_tags_tensor):
 
     return [NER_TAGS[p] for p in predicted_ner_tags]
 
-def model_predict(tokenize_text, pos_tags, device='cpu'):
+def model_predict(tokenize_text, pos_tags, model_path=DEFAULT_MODEL_PATH, device='cpu'):
     """Predict NER tags for a given text."""
     # Load model
-    model = load_model(device)
+    model = load_model(model_path, device)
 
     # Encode tokens
     encoded_tokens = encode_tokens(tokenize_text)
