@@ -7,5 +7,6 @@ flask_json
 flask_restful
 torchtext
 transformers
+gdown
 
 python3 -m spacy download en_core_web_sm

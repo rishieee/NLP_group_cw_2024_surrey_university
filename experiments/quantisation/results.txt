@@ -1,0 +1,9 @@
+# Before quantisation
+# Evaluation: 100%|██████████| 77/77 [05:23<00:00,  4.20s/it]
+# F1: AC = 0.84, LF = 0.72
+# Model size: 412MB
+
+# After quantisation:
+# Evaluation: 100%|██████████| 77/77 [04:09<00:00,  3.25s/it]
+# F1: AC = 0.83, LF = 0.66
+# Model size: 169MB
