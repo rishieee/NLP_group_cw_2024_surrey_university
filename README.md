@@ -85,6 +85,8 @@ Send a POST request to the `/predict` endpoint with JSON payload:
     "pos_tags": ["DET", "VERB", "DET", "NOUN"]
 }
 =======
+ gdown 1PJNFrfmDsOeSi_LYaFqF00b9o3A2gFPw
+
  docker build -t nlp-webapp . 
 
  docker run -p 5000:5000 nlp-webapp
