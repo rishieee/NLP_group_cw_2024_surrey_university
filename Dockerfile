@@ -1,6 +1,7 @@
 # Use a specific NVIDIA CUDA and Ubuntu version as a base image
 ARG BASE_IMAGE=nvidia/cuda:12.4.1-base-ubuntu22.04
 ARG PYTHON_VERSION=3.11
+ARG MODEL="quantized"
 
 FROM ${BASE_IMAGE} as dev_base
 
@@ -33,16 +34,23 @@ RUN pip3 install torch torchvision torchaudio --index-url https://download.pytor
 # Install the English language model for spaCy
 RUN python3 -m spacy download en_core_web_sm
 
-COPY quantized_biobert.zip web_app.zip
+RUN mkdir web_app
+WORKDIR /root/web_app/
 
-RUN unzip web_app.zip -d web_app
+COPY web_app/model_predict.py model_predict.py
+COPY web_app/nlp_group.py nlp_group.py 
+COPY web_app/process.py process.py
 
+COPY web_app/models.zip models.zip
 
-# Set the working directory for the web application
-WORKDIR /root/web_app/quantized_biobert
+# Unzip and organize model files
+RUN unzip models.zip -d models && \
+    mv models/models/* models && \
+    rm -rf models/models models.zip
+
 ADD . db
 
 # The command to run the web application script
-CMD ["python3", "-W", "ignore", "nlp_group.py"]
+ENTRYPOINT ["python3", "-W", "ignore", "nlp_group.py", "${MODEL}"]
 
 
