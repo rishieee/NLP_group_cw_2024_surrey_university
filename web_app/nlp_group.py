@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from flask import Flask, jsonify, request
 from flask_json import FlaskJSON, JsonError, json_response, as_json
@@ -77,16 +78,22 @@ def get_text():
 				}), 400
 
 def create_app():
+	logging.basicConfig(level=logging.INFO)
+	logger = logging.getLogger(__name__)
+
 	model_param = os.getenv('MODEL', 'biobert')
-	print(model_param)
+	logger.info(f"Model parameter: {model_param}")
+	
 	model = load_model(model_param)
 	app.config['model'] = model
 
 	# Perform a warm-up request
 	warmup_text = "Warm-up text"
+	logger.info("Performing warm-up request")
 	processor = ProcessText(warmup_text)
 	tokenize_text, pos_tags = processor.tokenizer()
 	model_predict(tokenize_text, pos_tags, model)
+	logger.info("Warm-up request completed")
 
 	return app
 
