@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from torchtext.vocab import vocab
+from torch.quantization import quantize_dynamic
 from transformers import BertTokenizerFast, BertModel
 import nltk
 
@@ -9,8 +10,7 @@ nltk.download('punkt')
 
 # Constants
 MODEL_CHECKPOINT = 'dmis-lab/biobert-v1.1'
-MODEL_PATH_1 = 'models/biobert_postags_cased__e_16.pt'
-MODEL_PATH_2 = 'models/quantized_biobert_postags_cased__e_16.pt'
+MODEL_PATH = 'models/biobert_postags_cased__e_16.pt'
 MAX_LENGTH = 512
 PAD_TOKEN = '<pad>'
 
@@ -61,15 +61,25 @@ class BioBertPosTagsClassifier(nn.Module):
 
         return logits
 
+def quantise_model(model):
+    # Set the quantization engine
+    torch.backends.quantized.engine = 'qnnpack'
+
+    # Apply dynamic quantization
+    quantised_model = quantize_dynamic(
+        model,
+        {torch.nn.Linear},
+        dtype=torch.qint8
+    )
+    return quantised_model
 
 def load_model(model_name, device='cpu'):
     """Load model."""
     model = BioBertPosTagsClassifier(output_dim=len(NER_TAGS), pos_vocab_size=len(POS_TAGS)+1, pos_embedding_dim=16)
-
+    model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device(device)))
+    
     if model_name == "quantized":
-        model.load_state_dict(torch.load(MODEL_PATH_2, map_location=torch.device(device)), strict=False)
-    else:
-        model.load_state_dict(torch.load(MODEL_PATH_1, map_location=torch.device(device)))
+        model = quantise_model(model)
 
     model.to(device).eval()
     return model
