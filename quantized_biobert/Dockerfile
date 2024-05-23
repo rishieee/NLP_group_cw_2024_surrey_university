@@ -21,8 +21,6 @@ WORKDIR /root
 # Copy the requirements file into the image
 COPY requirements.txt requirements.txt
 
-RUN ls -l
-
 # Install Python packages from the requirements file
 RUN python3 -m pip install -r requirements.txt
 
@@ -35,18 +33,16 @@ RUN pip3 install torch torchvision torchaudio --index-url https://download.pytor
 # Install the English language model for spaCy
 RUN python3 -m spacy download en_core_web_sm
 
-COPY web_app.zip web_app.zip
+COPY quantized_biobert.zip web_app.zip
 
 RUN unzip web_app.zip -d web_app
 
-RUN ls -l
 
 # Set the working directory for the web application
-WORKDIR /root/web_app/web_app
-
-RUN ls -l
+WORKDIR /root/web_app/quantized_biobert
+ADD . db
 
 # The command to run the web application script
-CMD ["python3", "nlp_group.py"]
+CMD ["python3", "-W", "ignore", "nlp_group.py"]
 
 
