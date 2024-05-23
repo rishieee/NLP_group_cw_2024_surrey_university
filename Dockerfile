@@ -34,14 +34,22 @@ RUN pip3 install torch torchvision torchaudio --index-url https://download.pytor
 # Install the English language model for spaCy
 RUN python3 -m spacy download en_core_web_sm
 
+# Install NLTK and download required NLTK data
+RUN pip3 install nltk
+RUN python3 -c "import nltk; nltk.download('punkt')"
+
+# Install Gunicorn
+RUN pip3 install gunicorn
+
 RUN mkdir web_app
 WORKDIR /root/web_app/
 
 COPY web_app/model_predict.py model_predict.py
 COPY web_app/nlp_group.py nlp_group.py 
 COPY web_app/process.py process.py
+COPY web_app/gunicorn_config.py gunicorn_config.py
 
-COPY web_app/models.zip models.zip
+COPY models.zip models.zip
 
 # Unzip and organize model files
 RUN unzip models.zip -d models && \
@@ -50,7 +58,12 @@ RUN unzip models.zip -d models && \
 
 ADD . db
 
+# Set the MODEL environment variable
+ENV MODEL=${MODEL}
+
 # The command to run the web application script
-ENTRYPOINT ["python3", "-W", "ignore", "nlp_group.py", "${MODEL}"]
+#ENTRYPOINT ["python3", "-W", "ignore", "nlp_group.py", "${MODEL}"]
+ENTRYPOINT ["gunicorn", "-c", "gunicorn_config.py", "nlp_group:app"]
+
 
 

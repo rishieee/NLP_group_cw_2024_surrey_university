@@ -76,11 +76,19 @@ def get_text():
 				"error": "Something went wrong"
 				}), 400
 
-
-if __name__ == '__main__':
-	model_param = "biobert"
-	if len(sys.argv) > 1:
-		model_param = sys.argv[1]
+def create_app():
+	model_param = os.getenv('MODEL', 'biobert')
+	print(model_param)
 	model = load_model(model_param)
 	app.config['model'] = model
-	app.run(host='0.0.0.0', port=5000)
+
+	# Perform a warm-up request
+	warmup_text = "Warm-up text"
+	processor = ProcessText(warmup_text)
+	tokenize_text, pos_tags = processor.tokenizer()
+	model_predict(tokenize_text, pos_tags, model)
+
+	return app
+
+
+app = create_app()
