@@ -1,7 +1,6 @@
 # Use a specific NVIDIA CUDA and Ubuntu version as a base image
 ARG BASE_IMAGE=nvidia/cuda:12.4.1-base-ubuntu22.04
 ARG PYTHON_VERSION=3.11
-ARG MODEL="quantized"
 
 FROM ${BASE_IMAGE} as dev_base
 
@@ -49,17 +48,14 @@ COPY web_app/nlp_group.py nlp_group.py
 COPY web_app/process.py process.py
 COPY web_app/gunicorn_config.py gunicorn_config.py
 
-COPY models.zip models.zip
+COPY biobert_postags_cased__e_16.pt.zip biobert_postags_cased__e_16.pt.zip
 
 # Unzip and organize model files
-RUN unzip models.zip -d models && \
+RUN unzip biobert_postags_cased__e_16.pt.zip -d models && \
     mv models/models/* models && \
-    rm -rf models/models models.zip
+    rm -rf models/models biobert_postags_cased__e_16.pt.zip
 
 ADD . db
-
-# Set the MODEL environment variable
-ENV MODEL=${MODEL}
 
 # The command to run the web application script
 #ENTRYPOINT ["python3", "-W", "ignore", "nlp_group.py", "${MODEL}"]

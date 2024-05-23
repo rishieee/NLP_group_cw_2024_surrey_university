@@ -8,9 +8,4 @@ flask_restful
 torchtext
 transformers
 gdown
-<<<<<<< HEAD
-
-python3 -m spacy download en_core_web_sm
-=======
 pandas
->>>>>>> 6f067c3 (Dockerfile)

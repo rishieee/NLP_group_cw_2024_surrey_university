@@ -1,102 +1,66 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-# BioBERT POS and NER Tagging Model
+# NLP Group CW 2024 Surrey University
 
-This project implements a Named Entity Recognition (NER) tagging model using BioBERT, a domain-specific variant of BERT for biomedical text.
-The model is fine-tuned to perform NER tasks, integrating token embeddings with POS tag embeddings to enhance performance.
+This project provides a Natural Language Processing (NLP) web application using a pre-trained BioBERT model. The application can be run in a Docker container and supports both quantized and non-quantized models.
 
-## Table of Contents
+## Installation
 
-- [Project Overview](#project-overview)
-- [Model Architecture](#model-architecture)
-- [Setup Instructions](#setup-instructions)
-- [Usage](#usage)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
+### Clone the repository
+```bash
+git clone https://github.com/MirkoSchiavone/NLP_group_cw_2024_surrey_university.git
+cd NLP_group_cw_2024_surrey_university
+```
 
-## Project Overview
-
-The goal of this project is to provide a robust model NER tagging within the biomedical domain. The BioBERT model is used as a base, and it is extended by adding an embedding layer for POS tags. This project includes:
-- A custom PyTorch model (`BioBertPosTagsClassifier`)
-- A Flask-based API for serving the model
-- Dockerization for easy deployment
-- Basic CI/CD pipeline scripts for testing and deployment
-- Comprehensive unit tests to ensure code reliability
-
-## Model Architecture
-
-The `BioBertPosTagsClassifier` model combines BioBERT embeddings with POS tag embeddings. The key components include:
-- **BioBERT**: Pre-trained BERT model fine-tuned on biomedical text.
-- **POS Embedding Layer**: Embeds POS tags which are concatenated with BioBERT embeddings.
-- **Fully Connected Layer**: Processes combined embeddings to output NER tags.
-
-## Setup Instructions
-
-### Prerequisites
-
-Ensure you have the following installed:
-- Python 3.8 or later
-- PyTorch
-- Transformers
-- Flask
-- Docker (for containerization)
-
-### Installation
-
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/your-username/nlp-model-app.git
-    cd nlp-model-app
-    ```
-
-2. Create a virtual environment and activate it:
+### Create a virtual environment and activate it
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
     ```
 
-3. Install the required packages:
+### Install the required packages
     ```bash
     pip install -r requirements.txt
     ```
 
-4. Download the pre-trained model:
+### Download the pre-trained model:
     ```bash
-    bash download_and_unzip_models.sh
+    bash download_models.sh
     ```
 
-## Usage
-
-### Running the Flask Application
-
-1. Start the Flask server:
+### Run Unit tests
     ```bash
-    python run.py
+    unzip biobert_postags_cased__e_16.pt.zip
+    pytest
     ```
 
-2. Access the API at `http://localhost:5000/predict`.
+### Create Docker Container:
+    ```bash
+    docker build -t nlp-webapp .
+    ```
 
-### Example API Request
+### Run application in Docker:
+    ```bash
+    # quantized model
+    docker run -e MODEL=quantized -p 5000:5000 nlp-webapp
+    ```
+    or
+    ```bash
+    # non-quantized model
+    docker run -e MODEL=biobert -p 5000:5000 nlp-webapp
+    ```
 
-Send a POST request to the `/predict` endpoint with JSON payload:
-```json
-{
-    "text": ["This", "is", "a", "sample"],
-    "pos_tags": ["DET", "VERB", "DET", "NOUN"]
-}
-=======
- gdown 1PJNFrfmDsOeSi_LYaFqF00b9o3A2gFPw
+### Test the Application
+    Send a POST request to the `/predict` endpoint with JSON payload:
+    ```json
+    {
+        "text":"For this purpose the Gothenburg Young Persons Empowerment Scale (GYPES) was developed."
+    }
+    ```
 
- docker build -t nlp-webapp . 
-
- docker run -p 5000:5000 nlp-webapp
->>>>>>> 6f067c3 (Dockerfile)
-=======
-sh ./download_and_unzip_models.sh
- 
- docker build -t nlp_web_app . 
-
- docker run -v $PWD/db:/root/web_app/db -p 5000:5000 nlp_web_app
-
->>>>>>> e4e4636 (updated version)
+    Should return the following:
+    ```json
+    {
+        "ner_tags": "B-O B-O B-O B-O B-LF I-LF I-LF I-LF I-LF B-O B-AC B-O B-O B-O B-O ",
+        "original": "For this purpose the Gothenburg Young Persons Empowerment Scale (GYPES) was developed.",
+        "prediction_time": 0.717442,
+        "success": true
+    }
