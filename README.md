@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 # BioBERT POS and NER Tagging Model
 
 This project implements a Named Entity Recognition (NER) tagging model using BioBERT, a domain-specific variant of BERT for biomedical text.
@@ -83,3 +85,18 @@ Send a POST request to the `/predict` endpoint with JSON payload:
     "text": ["This", "is", "a", "sample"],
     "pos_tags": ["DET", "VERB", "DET", "NOUN"]
 }
+=======
+ gdown 1PJNFrfmDsOeSi_LYaFqF00b9o3A2gFPw
+
+ docker build -t nlp-webapp . 
+
+ docker run -p 5000:5000 nlp-webapp
+>>>>>>> 6f067c3 (Dockerfile)
+=======
+sh ./download_and_unzip_models.sh
+ 
+ docker build -t nlp_web_app . 
+
+ docker run -v $PWD/db:/root/web_app/db -p 5000:5000 nlp_web_app
+
+>>>>>>> e4e4636 (updated version)

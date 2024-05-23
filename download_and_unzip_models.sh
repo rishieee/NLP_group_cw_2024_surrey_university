@@ -1,10 +1,1 @@
-# biobert_postags_cased__e_16.pt
-gdown 1--lamen5vIhAk6oGWiwFhzJJSdWSyLTr
-unzip biobert_postags_cased__e_16.pt.zip
-
-# quantized_biobert_postags_cased__e_16.pt
-gdown 1ItC9bBJspeY32mN9uRqY4TPa2lznjZhJ
-unzip quantized_biobert_postags_cased__e_16.pt.zip
-
-rm biobert_postags_cased__e_16.pt.zip
-rm quantized_biobert_postags_cased__e_16.pt.zip
+gdown 1HOno9tIxf0BJmNI_KCCD4QzT9bP_cW1Z
