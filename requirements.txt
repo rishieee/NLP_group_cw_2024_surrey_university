@@ -9,3 +9,4 @@ torchtext
 transformers
 gdown
 pandas
+pytest

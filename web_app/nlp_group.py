@@ -84,6 +84,7 @@ def create_app():
 	model_param = os.getenv('MODEL', 'biobert')
 	logger.info(f"Model parameter: {model_param}")
 	
+	logger.info(f"Loading model...")
 	model = load_model(model_param)
 	app.config['model'] = model
 

@@ -77,7 +77,7 @@ def load_model(model_name, device='cpu'):
     """Load model."""
     model = BioBertPosTagsClassifier(output_dim=len(NER_TAGS), pos_vocab_size=len(POS_TAGS)+1, pos_embedding_dim=16)
     model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device(device)))
-    
+
     if model_name == "quantized":
         model = quantise_model(model)
 
