@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
+import logging
 from torchtext.vocab import vocab
 from torch.quantization import quantize_dynamic
 from transformers import BertTokenizerFast, BertModel
@@ -75,11 +76,19 @@ def quantise_model(model):
 
 def load_model(model_name, device='cpu'):
     """Load model."""
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+    logger.info(f"load_model function")
+
     model = BioBertPosTagsClassifier(output_dim=len(NER_TAGS), pos_vocab_size=len(POS_TAGS)+1, pos_embedding_dim=16)
+    logger.info(f"Model defined")
     model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device(device)))
-    
+    logger.info(f"Model loaded")
+
     if model_name == "quantized":
         model = quantise_model(model)
+        logger.info(f"Model quantized")
+
 
     model.to(device).eval()
     return model

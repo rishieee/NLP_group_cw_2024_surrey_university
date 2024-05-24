@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    image: nlp-webapp
+    build:
+      context: .
+    environment:
+      - MODEL=${MODEL}
+    ports:
+      - "5000:5000"
+    entrypoint: ["gunicorn", "-c", "gunicorn_config.py", "nlp_group:app"]
+
+  test:
+    image: nlp-webapp
+    build:
+      context: .
+    depends_on:
+      - app
+    environment:
+      - MODEL=${MODEL}
+      - PYTHONUNBUFFERED=1
+    entrypoint: ["sh", "-c", "echo 'Waiting for 2 minutes...' && ls -ltr && sleep 60 && echo 'Starting pytest...' && pytest test_api.py -vv"]

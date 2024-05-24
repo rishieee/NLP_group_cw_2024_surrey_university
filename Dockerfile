@@ -43,10 +43,10 @@ RUN pip3 install gunicorn
 RUN mkdir web_app
 WORKDIR /root/web_app/
 
-COPY web_app/model_predict.py model_predict.py
-COPY web_app/nlp_group.py nlp_group.py 
-COPY web_app/process.py process.py
-COPY web_app/gunicorn_config.py gunicorn_config.py
+COPY web_app/ .
+
+COPY tests/test_unittest.py test_unittest.py
+COPY tests/test_api.py test_api.py
 
 COPY biobert_postags_cased__e_16.pt.zip biobert_postags_cased__e_16.pt.zip
 
@@ -55,11 +55,11 @@ RUN unzip biobert_postags_cased__e_16.pt.zip -d models && \
     mv models/models/* models && \
     rm -rf models/models biobert_postags_cased__e_16.pt.zip
 
-ADD . db
+#ADD . db
+# Create the db directory
+RUN mkdir -p /root/web_app/db
 
 # The command to run the web application script
 #ENTRYPOINT ["python3", "-W", "ignore", "nlp_group.py", "${MODEL}"]
-ENTRYPOINT ["gunicorn", "-c", "gunicorn_config.py", "nlp_group:app"]
-
-
-
+#ENTRYPOINT ["gunicorn", "-c", "gunicorn_config.py", "nlp_group:app"]
+CMD ["gunicorn", "-c", "gunicorn_config.py", "nlp_group:app"]
