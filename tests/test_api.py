@@ -1,7 +1,7 @@
 import requests
 
 def test_predict_endpoint():
-    url = "http://localhost:5000/predict"
+    url = "http://app:5000/predict"
     payload = {
         "text": "For this purpose the Gothenburg Young Persons Empowerment Scale (GYPES) was developed."
     }
