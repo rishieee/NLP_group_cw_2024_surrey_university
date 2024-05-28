@@ -48,12 +48,12 @@ COPY web_app/ .
 COPY tests/test_unittest.py test_unittest.py
 COPY tests/test_api.py test_api.py
 
-COPY biobert_postags_cased__e_16.pt.zip biobert_postags_cased__e_16.pt.zip
+#COPY biobert_postags_cased__e_16.pt.zip biobert_postags_cased__e_16.pt.zip
 
 # Unzip and organize model files
-RUN unzip biobert_postags_cased__e_16.pt.zip -d models && \
-    mv models/models/* models && \
-    rm -rf models/models biobert_postags_cased__e_16.pt.zip
+#RUN unzip biobert_postags_cased__e_16.pt.zip -d models && \
+#    mv models/models/* models && \
+#    rm -rf models/models biobert_postags_cased__e_16.pt.zip
 
 #ADD . db
 # Create the db directory
