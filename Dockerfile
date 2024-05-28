@@ -48,7 +48,8 @@ COPY web_app/ .
 COPY tests/test_unittest.py test_unittest.py
 COPY tests/test_api.py test_api.py
 
-COPY biobert_postags_cased__e_16.pt.zip biobert_postags_cased__e_16.pt.zip
+#COPY biobert_postags_cased__e_16.pt.zip biobert_postags_cased__e_16.pt.zip
+RUN gdown --id 1--lamen5vIhAk6oGWiwFhzJJSdWSyLTr -O biobert_postags_cased__e_16.pt.zip
 
 # Unzip and organize model files
 RUN unzip biobert_postags_cased__e_16.pt.zip -d models && \
